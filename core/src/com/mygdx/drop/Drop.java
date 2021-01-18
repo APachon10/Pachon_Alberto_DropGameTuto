@@ -27,6 +27,7 @@ public class Drop extends ApplicationAdapter {
 	private Rectangle bucket2;
 
 	private Array<Rectangle> gotas;
+	Rectangle raindrop;
 	private long lastDropTime;
 
 
@@ -61,15 +62,15 @@ public class Drop extends ApplicationAdapter {
 		camera.update();
 
 		//Hacer que el cubo se mueva con el raton
-		/*if(Gdx.input.isTouched()) {
+		if(Gdx.input.isTouched()) {
 			Vector3 touchPos = new Vector3();
 			touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
 			camera.unproject(touchPos);
 			bucket2.x = touchPos.x - 64 / 2;
-		}*/
+		}
 		//Hacer que el cubo se mueva con las techas
-		if(Gdx.input.isKeyPressed(Input.Keys.LEFT)) bucket2.x -= 200 * Gdx.graphics.getDeltaTime();
-		if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)) bucket2.x += 200 * Gdx.graphics.getDeltaTime();
+		/*if(Gdx.input.isKeyPressed(Input.Keys.LEFT)) bucket2.x -= 200 * Gdx.graphics.getDeltaTime();
+		if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)) bucket2.x += 200 * Gdx.graphics.getDeltaTime();*/
 
 		//Con esto vigilamos que el cubo se quede en el limite de la pantalla
 		if(bucket2.x < 0){
@@ -81,9 +82,10 @@ public class Drop extends ApplicationAdapter {
 		if(TimeUtils.nanoTime() - lastDropTime > 1000000000) spawnRaindrop();
 
 		for (Iterator<Rectangle> iter = gotas.iterator(); iter.hasNext(); ) {
-			Rectangle raindrop = iter.next();
+			raindrop = iter.next();
 			raindrop.y -= 200 * Gdx.graphics.getDeltaTime();
 			if(raindrop.y + 64 < 0) iter.remove();
+			if(raindrop.overlaps(bucket2)) iter.remove();
 		}
 
 		// Comenzamos a hacer el dibujo
@@ -108,5 +110,6 @@ public class Drop extends ApplicationAdapter {
 	public void dispose () {
 		batch.dispose();
 		bucket.dispose();
+		drop.dispose();
 	}
 }
