@@ -17,7 +17,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 public class Drop extends ApplicationAdapter {
-	//Texturas
+	//Objetos que utilizaremos
 	private Texture drop;
 	private Texture bucket;
 
@@ -61,6 +61,16 @@ public class Drop extends ApplicationAdapter {
 
 		camera.update();
 
+		batch.setProjectionMatrix(camera.combined);
+
+		// Comenzamos a hacer el dibujo
+		batch.begin();
+		batch.draw(bucket, bucket2.x, bucket2.y);
+		for(Rectangle raindrop: gotas) {
+			batch.draw(drop, raindrop.x, raindrop.y);
+		}
+		batch.end();
+
 		//Hacer que el cubo se mueva con el raton
 		if(Gdx.input.isTouched()) {
 			Vector3 touchPos = new Vector3();
@@ -69,8 +79,8 @@ public class Drop extends ApplicationAdapter {
 			bucket2.x = touchPos.x - 64 / 2;
 		}
 		//Hacer que el cubo se mueva con las techas
-		/*if(Gdx.input.isKeyPressed(Input.Keys.LEFT)) bucket2.x -= 200 * Gdx.graphics.getDeltaTime();
-		if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)) bucket2.x += 200 * Gdx.graphics.getDeltaTime();*/
+		if(Gdx.input.isKeyPressed(Input.Keys.LEFT)) bucket2.x -= 200 * Gdx.graphics.getDeltaTime();
+		if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)) bucket2.x += 200 * Gdx.graphics.getDeltaTime();
 
 		//Con esto vigilamos que el cubo se quede en el limite de la pantalla
 		if(bucket2.x < 0){
@@ -85,16 +95,10 @@ public class Drop extends ApplicationAdapter {
 			raindrop = iter.next();
 			raindrop.y -= 200 * Gdx.graphics.getDeltaTime();
 			if(raindrop.y + 64 < 0) iter.remove();
-			if(raindrop.overlaps(bucket2)) iter.remove();
+			if(raindrop.overlaps(bucket2)){
+				iter.remove();
+			}
 		}
-
-		// Comenzamos a hacer el dibujo
-		batch.begin();
-		batch.draw(bucket, bucket2.x, bucket2.y);
-		for(Rectangle raindrop: gotas) {
-			batch.draw(drop, raindrop.x, raindrop.y);
-		}
-		batch.end();
 	}
 	private void spawnRaindrop() {
 		Rectangle raindrop = new Rectangle();
@@ -108,8 +112,8 @@ public class Drop extends ApplicationAdapter {
 
 	@Override
 	public void dispose () {
-		batch.dispose();
-		bucket.dispose();
 		drop.dispose();
+		bucket.dispose();
+		batch.dispose();
 	}
 }
